@@ -82,6 +82,29 @@ func Encode(content string, level RecoveryLevel, size int) ([]byte, error) {
 	return q.PNG(size)
 }
 
+// EncodeWithColors QR Code and return a raw PNG image.
+//
+// size is both the image width and height in pixels. If size is too small then
+// a larger image is silently returned. Negative values for size cause a
+// variable sized image to be returned: See the documentation for Image().
+// background and foreground are colors which are used when creating the qr code.
+//
+// To serve over HTTP, remember to send a Content-Type: image/png header.
+func EncodeWithColors(content string, level RecoveryLevel, background, foreground color.Color, size int) ([]byte, error) {
+	var q *QRCode
+
+	q, err := New(content, level)
+
+	if err != nil {
+		return nil, err
+	}
+
+	q.BackgroundColor = background
+	q.ForegroundColor = foreground
+
+	return q.PNG(size)
+}
+
 // WriteFile encodes, then writes a QR Code to the given filename in PNG format.
 //
 // size is both the image width and height in pixels. If size is too small then
